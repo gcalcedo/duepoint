@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+demo-artifacts/
+.env.solari
+recordings/
+video/out/*
+video/assets/music.mp3
+data/
+!video/out/duepoint-demo.mp4

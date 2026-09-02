@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### End-to-end applications
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [ar-portal-collections](examples/ar-portal-collections) | TypeScript | Collect overdue invoices across four different customer AP portals in parallel, with approvals and a legacy AR system |
+
 ## Running an example
 
 Each directory is self-contained.

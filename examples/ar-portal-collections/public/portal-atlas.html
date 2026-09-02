@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ProcureHub Supplier Portal — Atlas Retail Group</title>
+    <link rel="stylesheet" href="/portal-atlas.css" />
+  </head>
+  <body>
+    <header class="ph-top">
+      <div class="ph-logo"><i></i>ProcureHub</div>
+      <form class="ph-search" id="search-form" role="search"><input id="global-search" type="search" aria-label="Search invoices and orders" placeholder="Search invoices and orders" autocomplete="off" /></form>
+      <div class="ph-user"><span>Northbridge Industrial Supply</span><b>NB</b></div>
+    </header>
+    <div class="ph-shell">
+      <nav class="ph-side" aria-label="Main">
+        <a href="#" class="active">Home</a><a href="#">Orders</a><a href="#">Invoices</a><a href="#">Payments</a><a href="#">Catalog</a><a href="#">Support</a>
+      </nav>
+      <main class="ph-main">
+        <section id="home">
+          <h1>Welcome back, Northbridge</h1>
+          <p class="ph-sub">Customer: <b>Atlas Retail Group</b> · Supplier ID 88-2931 · Terms Net 30</p>
+          <div class="ph-cards">
+            <div class="ph-card"><small>Awaiting approval</small><b id="c-pending">—</b><span>invoices</span></div>
+            <div class="ph-card"><small>Disputed</small><b id="c-disputed">—</b><span>needs your reply</span></div>
+            <div class="ph-card"><small>Scheduled</small><b id="c-scheduled">—</b><span>payments</span></div>
+            <div class="ph-card"><small>Paid (30d)</small><b id="c-paid">—</b><span>invoices</span></div>
+          </div>
+          <h2>Recent activity</h2>
+          <ul class="ph-activity" id="activity"></ul>
+        </section>
+        <section id="results" hidden>
+          <h1>Search results <small id="results-query"></small></h1>
+          <div class="ph-results" id="result-list"></div>
+          <div class="ph-empty" id="results-empty" hidden><b>No results</b><p>We couldn't find an invoice or order matching <span id="empty-query"></span>. If you haven't invoiced this order yet, you can create one from an open purchase order.</p><button type="button" class="ph-primary" id="create-invoice">Create invoice</button></div>
+        </section>
+      </main>
+    </div>
+
+    <aside class="ph-drawer" id="drawer" role="dialog" aria-label="Invoice details" hidden></aside>
+    <dialog class="ph-dialog" id="confirm-dialog"><h3 id="confirm-title">Confirm</h3><p id="confirm-text"></p><div class="ph-dialog-actions"><button type="button" id="confirm-cancel">Cancel</button><button type="button" class="ph-primary" id="confirm-ok">Confirm</button></div></dialog>
+    <dialog class="ph-dialog wide" id="wizard"></dialog>
+    <script src="/portal-atlas.js" type="module"></script>
+  </body>
+</html>

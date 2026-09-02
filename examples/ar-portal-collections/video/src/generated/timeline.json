@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-09-02T08:30:42.145Z",
+  "music": "music.mp3",
+  "marks": {
+    "establish": 2.901,
+    "reset": 4.221,
+    "runStart": 4.236,
+    "runComplete": 328.862,
+    "reviewFilter": 334.44,
+    "disputeSelected": 336.467,
+    "approveClick": 336.488,
+    "approveDone": 414.272,
+    "escalate": 418.533,
+    "completedView": 423.062,
+    "end": 427.103
+  },
+  "rampRate": 30.26,
+  "stats": {
+    "runSec": 324,
+    "accuracyHit": 22,
+    "accuracyTotal": 22,
+    "confirmed": 93495,
+    "unblocked": 204080,
+    "atRisk": 135450,
+    "processed": 20,
+    "held": 4,
+    "totalInvoices": 24,
+    "overdue": 433025,
+    "replays": 22
+  },
+  "broll": [
+    {
+      "src": "portal-suppliernet.webm",
+      "caption": "SupplierNet — correcting and resubmitting a rejected invoice.",
+      "from": 0.17800000000000002,
+      "to": 3.2600000000000002,
+      "rate": 1
+    },
+    {
+      "src": "portal-procurehub.webm",
+      "caption": "ProcureHub — replying inside a dispute thread.",
+      "from": 0.202,
+      "to": 3.74,
+      "rate": 1
+    },
+    {
+      "src": "portal-tradelink.webm",
+      "caption": "TradeLink — nudging an approval that sat for nine days.",
+      "from": 0.22599999999999998,
+      "to": 4.22,
+      "rate": 1
+    },
+    {
+      "src": "portal-vendorcenter.webm",
+      "caption": "Vendor Center — a homegrown legacy portal. Same agent.",
+      "from": 0.22999999999999998,
+      "to": 4.3,
+      "rate": 1
+    }
+  ],
+  "lookupBroll": [
+    {
+      "src": "lookup-suppliernet.webm",
+      "from": 0.17600000000000002,
+      "to": 3.22,
+      "rate": 1
+    },
+    {
+      "src": "lookup-procurehub.webm",
+      "from": 0.136,
+      "to": 2.4200000000000004,
+      "rate": 1
+    },
+    {
+      "src": "lookup-tradelink.webm",
+      "from": 0.118,
+      "to": 2.06,
+      "rate": 1
+    },
+    {
+      "src": "lookup-vendorcenter.webm",
+      "from": 0.16000000000000003,
+      "to": 2.9000000000000004,
+      "rate": 1
+    }
+  ],
+  "replayBeat": {
+    "src": "replay-beat.webm",
+    "from": 0.4,
+    "to": 10.02,
+    "rate": 1.48
+  },
+  "arBroll": {
+    "src": "ar-corvus.webm",
+    "from": 0.192,
+    "to": 3.54,
+    "rate": 1
+  }
+}

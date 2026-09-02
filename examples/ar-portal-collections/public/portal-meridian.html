@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SupplierNet — Meridian Manufacturing</title>
+    <link rel="stylesheet" href="/portal-meridian.css" />
+  </head>
+  <body>
+    <header class="sn-top">
+      <div class="sn-logo"><b>SupplierNet</b><span>Business Network</span></div>
+      <div class="sn-account">Northbridge Industrial Supply <small>AN01044821</small> ▾</div>
+    </header>
+    <nav class="sn-tabs" aria-label="Sections">
+      <button type="button" data-view="home" class="active">Home</button>
+      <button type="button" data-view="orders">Orders</button>
+      <button type="button" data-view="invoices">Invoices</button>
+      <button type="button" data-view="payments">Payments</button>
+      <button type="button" data-view="catalogs">Catalogs</button>
+      <button type="button" data-view="reports">Reports</button>
+    </nav>
+
+    <main class="sn-main">
+      <section id="view-home" class="sn-view">
+        <h1>Welcome, Northbridge Industrial Supply</h1>
+        <div class="sn-tiles">
+          <div class="sn-tile"><small>Open orders</small><b>14</b></div>
+          <div class="sn-tile"><small>Invoices pending approval</small><b id="tile-pending">—</b></div>
+          <div class="sn-tile"><small>Rejected invoices</small><b id="tile-rejected">—</b></div>
+          <div class="sn-tile"><small>Scheduled payments</small><b id="tile-scheduled">—</b></div>
+        </div>
+        <p class="sn-note">Relationship: <b>Meridian Manufacturing</b> · Trading since 2019 · Payment terms Net 30</p>
+      </section>
+
+      <section id="view-invoices" class="sn-view" hidden>
+        <div class="sn-layout">
+          <aside class="sn-filters" aria-label="Filters">
+            <h2>Search filters</h2>
+            <form id="filter-form">
+              <label for="filter-customer">Customer</label>
+              <select id="filter-customer"><option>Meridian Manufacturing</option></select>
+              <label for="filter-invoice">Invoice number</label>
+              <input id="filter-invoice" autocomplete="off" placeholder="Exact or partial" />
+              <label for="filter-range">Date range</label>
+              <select id="filter-range"><option>Last 90 days</option><option>Last 180 days</option><option>Last 12 months</option></select>
+              <label for="filter-status">Invoice status</label>
+              <select id="filter-status"><option>All</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option><option>Paid</option><option>Disputed</option></select>
+              <div class="sn-filter-actions"><button type="submit" class="sn-primary">Search</button><button type="button" id="filter-reset">Reset</button></div>
+            </form>
+          </aside>
+          <div class="sn-content">
+            <div id="invoice-list">
+              <div class="sn-toolbar"><h1>Invoices</h1><div><button type="button" id="create-invoice" class="sn-primary">Create Invoice from PO</button><button type="button">Export ▾</button></div></div>
+              <table class="sn-table">
+                <thead><tr><th>Invoice #</th><th>Customer</th><th>Reference</th><th>Submitted</th><th class="num">Amount</th><th>Routing Status</th><th>Invoice Status</th></tr></thead>
+                <tbody id="invoice-rows"></tbody>
+              </table>
+              <p id="empty" class="sn-empty" hidden>No invoices match your filter criteria.</p>
+            </div>
+            <div id="invoice-detail" hidden></div>
+            <div id="invoice-create" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-orders" class="sn-view sn-placeholder" hidden><h1>Orders</h1><p>14 open purchase orders. Select a customer to view releases.</p></section>
+      <section id="view-payments" class="sn-view sn-placeholder" hidden><h1>Payments</h1><p>Remittance advices are published by the buyer as payments settle.</p></section>
+      <section id="view-catalogs" class="sn-view sn-placeholder" hidden><h1>Catalogs</h1><p>No catalog updates pending.</p></section>
+      <section id="view-reports" class="sn-view sn-placeholder" hidden><h1>Reports</h1><p>Scheduled reports run nightly.</p></section>
+    </main>
+    <footer class="sn-footer">© SupplierNet Business Network · Privacy · Terms · Supplier Support</footer>
+    <script src="/portal-meridian.js" type="module"></script>
+  </body>
+</html>

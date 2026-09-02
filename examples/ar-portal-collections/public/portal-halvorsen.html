@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TradeLink e-Invoicing — Halvorsen Logistics</title>
+    <link rel="stylesheet" href="/portal-halvorsen.css" />
+  </head>
+  <body>
+    <div class="tl-shell">
+      <aside class="tl-side">
+        <div class="tl-brand">Trade<span>Link</span><small>e-Invoicing Network</small></div>
+        <nav aria-label="Menu">
+          <a href="#dashboard" data-view="dashboard" class="active">Dashboard</a>
+          <div class="tl-group">Invoicing</div>
+          <a href="#create" data-view="create" class="sub">Create invoice</a>
+          <a href="#status" data-view="status" class="sub">Invoice status</a>
+          <a href="#drafts" data-view="drafts" class="sub">Drafts</a>
+          <a href="#reporting" data-view="reporting">Reporting</a>
+          <a href="#customers" data-view="customers">Customers</a>
+          <a href="#help" data-view="help">Help</a>
+        </nav>
+        <div class="tl-account"><b>Northbridge Industrial Supply</b><small>Supplier · AAA-0021174</small></div>
+      </aside>
+      <main class="tl-main">
+        <header class="tl-bar"><span id="crumb">Dashboard</span><span class="tl-env">Production</span></header>
+
+        <section id="view-dashboard" class="tl-view">
+          <h1>Dashboard</h1>
+          <div class="tl-kpis">
+            <div><small>Documents this month</small><b>27</b></div>
+            <div><small>Awaiting buyer approval</small><b id="k-pending">—</b></div>
+            <div><small>Failed validation</small><b id="k-failed">—</b></div>
+            <div><small>Paid this month</small><b id="k-paid">—</b></div>
+          </div>
+          <p class="tl-muted">Connected buyers: Halvorsen Logistics, Halvorsen Logistics (Nordics).</p>
+        </section>
+
+        <section id="view-status" class="tl-view" hidden>
+          <h1>Invoice status</h1>
+          <p class="tl-muted">Look up a document you have sent through TradeLink. Select the buyer first — references are only unique per buyer.</p>
+          <form class="tl-form" id="status-form">
+            <div><label for="buyer">Buyer</label><select id="buyer" required><option value="">Select a buyer</option><option value="halvorsen">Halvorsen Logistics</option><option value="halvorsen-nordics">Halvorsen Logistics (Nordics)</option></select></div>
+            <div><label for="reference">Your invoice reference</label><input id="reference" required autocomplete="off" /></div>
+            <div class="tl-form-action"><button type="submit" class="tl-primary">Go</button></div>
+          </form>
+          <div id="status-result"></div>
+        </section>
+
+        <section id="view-create" class="tl-view" hidden><h1>Create invoice</h1><p class="tl-muted">Use “Invoice status” to key a missing document against a buyer.</p></section>
+        <section id="view-drafts" class="tl-view" hidden><h1>Drafts</h1><p class="tl-muted">No drafts.</p></section>
+        <section id="view-reporting" class="tl-view" hidden><h1>Reporting</h1><p class="tl-muted">Reports are generated overnight.</p></section>
+        <section id="view-customers" class="tl-view" hidden><h1>Customers</h1><p class="tl-muted">2 connected buyer entities.</p></section>
+        <section id="view-help" class="tl-view" hidden><h1>Help</h1><p class="tl-muted">Supplier support: support@tradelink.example</p></section>
+      </main>
+    </div>
+    <script src="/portal-halvorsen.js" type="module"></script>
+  </body>
+</html>

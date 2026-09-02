@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Crestview Health Systems - Vendor Center</title>
+    <link rel="stylesheet" href="/portal-crestview.css" />
+  </head>
+  <body>
+    <div id="header"><div id="banner"><span class="org">CRESTVIEW HEALTH SYSTEMS</span><span class="app">Vendor Center</span></div><div id="userbar">Logged in as: <b>NORTHBRIDGE IND SUPPLY</b> (Vendor #V-20817) | <a href="#">Log Off</a></div></div>
+    <div id="layout">
+      <div id="menu">
+        <div class="menutitle">MENU</div>
+        <a href="#home" data-page="home">Home</a>
+        <a href="#inquiry" data-page="inquiry">Invoice Inquiry</a>
+        <a href="#submit" data-page="submit">Submit Invoice</a>
+        <a href="#payments" data-page="payments">Payment History</a>
+        <a href="#remittance" data-page="remittance">Remittance Advice</a>
+        <a href="#contact" data-page="contact">Contact AP</a>
+        <div class="menutitle">HELP</div>
+        <a href="#faq">Vendor FAQ</a>
+        <a href="#w9">W-9 on File</a>
+      </div>
+      <div id="content">
+        <div id="page-home" class="page">
+          <h2>Welcome to the Crestview Health Systems Vendor Center</h2>
+          <p>This site allows vendors to check the status of invoices, view payment history and remittance advices, and submit invoices to Accounts Payable.</p>
+          <p class="notice"><b>NOTICE:</b> Invoices submitted without a valid Crestview PO number will be returned to vendor. Please allow 5-7 business days for processing.</p>
+          <p>Last login: 08/30/2026 07:14 AM</p>
+        </div>
+        <div id="page-inquiry" class="page" hidden>
+          <h2>Invoice Inquiry</h2>
+          <p>All invoices on file for vendor V-20817. Click <u>View</u> for details.</p>
+          <table id="inquiry-table" class="grid" cellspacing="0"><thead><tr><th>Voucher #</th><th>Vendor Invoice No</th><th>Inv Date</th><th>PO Number</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="inquiry-rows"></tbody></table>
+          <p class="small">Records 1 - <span id="record-count"></span></p>
+        </div>
+        <div id="page-detail" class="page" hidden></div>
+        <div id="page-submit" class="page" hidden>
+          <h2>Submit Invoice</h2>
+          <p>Enter invoice information exactly as it appears on your invoice document. Fields marked * are required.</p>
+          <form id="submit-form" class="plainform">
+            <div><label for="s-vendor-inv">Vendor Invoice No *</label><input id="s-vendor-inv" required /></div>
+            <div><label for="s-po">PO Number *</label><input id="s-po" required /></div>
+            <div><label for="s-amount">Invoice Amount *</label><input id="s-amount" required /></div>
+            <div><label for="s-date">Invoice Date</label><input id="s-date" /></div>
+            <div><label for="s-comments">Remarks</label><textarea id="s-comments"></textarea></div>
+            <div class="buttons"><button type="submit">Submit</button> <button type="reset">Clear</button></div>
+          </form>
+          <div id="submit-slot"></div>
+        </div>
+        <div id="page-payments" class="page" hidden><h2>Payment History</h2><p>Select a date range to view payments.</p></div>
+        <div id="page-remittance" class="page" hidden><h2>Remittance Advice</h2><p>Remittance advices are available for 24 months.</p></div>
+        <div id="page-contact" class="page" hidden><h2>Contact AP</h2><p>Accounts Payable: vendors@crestviewhealth.example | (555) 010-2200 | Mon-Fri 8am-4pm</p></div>
+      </div>
+    </div>
+    <div id="footer">Crestview Health Systems &copy; 2009-2026 &nbsp;|&nbsp; Vendor Center v3.2.1 &nbsp;|&nbsp; Best viewed in Internet Explorer 8 or later</div>
+    <script src="/portal-crestview.js" type="module"></script>
+  </body>
+</html>

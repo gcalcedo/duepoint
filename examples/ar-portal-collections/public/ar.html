@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Corvus AR 9.2</title><link rel="stylesheet" href="/ar.css" /></head>
+  <body>
+    <div class="win">
+      <div class="titlebar"><span>Corvus AR 9.2 — Receivables Workstation — NORTHBRIDGE INDUSTRIAL SUPPLY (CO 01)</span><span class="winbtns"><i>—</i><i>□</i><i>×</i></span></div>
+      <div class="menubar">File &nbsp; Edit &nbsp; View &nbsp; Customers &nbsp; Invoices &nbsp; Cash &nbsp; Collections &nbsp; Reports &nbsp; Window &nbsp; Help</div>
+      <div class="toolbar"><span>⌂</span><span>⌕</span><span>▤</span><span>$</span><span>✉</span><span>↻</span></div>
+      <main class="content">
+        <div class="tabs"><span>Customer</span><span class="active">Collections</span><span>Cash Application</span><span>Aging</span><span>Reports</span></div>
+        <section class="panel">
+          <form class="search" id="search-form"><label for="invoice-number">Invoice number</label><input id="invoice-number" required placeholder="INV-00000" /><button type="submit" class="btn">Find</button><span class="hint">F3 = next · F5 = refresh</span></form>
+          <section class="record" id="record" data-testid="ar-record" hidden>
+            <div class="columns">
+              <fieldset><legend>Invoice</legend>
+                <span>Invoice no:</span><b id="r-id"></b><span>Customer:</span><b id="r-customer"></b><span>PO number:</span><b id="r-po"></b><span>Invoice date:</span><b id="r-date"></b><span>Due date:</span><b id="r-due"></b><span>Open amount:</span><b id="r-amount"></b><span>Days past due:</span><b id="r-days" class="red"></b>
+              </fieldset>
+              <fieldset><legend>Account</legend>
+                <span>Terms:</span><b>Net 30</b><span>Credit limit:</span><b>$250,000.00</b><span>Collector:</span><b>AGENT01</b><span>Last contact:</span><b id="r-last">—</b><span>Risk class:</span><b>B</b>
+              </fieldset>
+            </div>
+            <form id="post-form" class="form">
+              <label for="collection-status">Collection status</label>
+              <select id="collection-status"><option value="promise">Promise to pay</option><option value="resubmitted">Resubmitted to customer</option><option value="reminder">Reminder sent</option><option value="dispute">Dispute response sent</option><option value="paid">Paid — matched to remittance</option><option value="statement">Statement sent</option><option value="escalated">Escalated to account manager</option></select>
+              <label for="promise-date">Promise date</label><input id="promise-date" placeholder="YYYY-MM-DD" />
+              <label for="portal-reference">Portal reference</label><input id="portal-reference" />
+              <label for="collector-note">Collector note</label><textarea id="collector-note"></textarea>
+              <div></div>
+              <div class="savebar"><span class="saved" id="posted" data-testid="ar-posted" hidden>✓ Posted to ledger</span><button type="button" class="btn">Cancel</button><button type="submit" class="btn">Post to ledger</button></div>
+            </form>
+          </section>
+        </section>
+      </main>
+      <div class="statusbar"><span>DB: CORVUS_PROD · Company 01 · Period 2026-09</span><span>User: AGENT01 · Terminal WS-114</span></div>
+    </div>
+    <script src="/ar.js" type="module"></script>
+  </body>
+</html>

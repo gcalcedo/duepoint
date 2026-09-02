@@ -1,0 +1,45 @@
+{
+  "name": "solari-ar-portal-collections",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "seed": "tsx src/seed.ts",
+    "start": "npm run seed && node --env-file-if-exists=.env --env-file-if-exists=../../.env --import tsx src/server.ts",
+    "demo": "DEMO_MODE=visible npm start",
+    "demo:agent": "AGENT_MODE=codex DEMO_MODE=visible npm start",
+    "demo:solari": "npm run seed && AGENT_MODE=codex BROWSER_MCP=solari EXECUTION_PROVIDER=solari node --env-file-if-exists=.env --env-file-if-exists=../../.env --env-file-if-exists=.env.solari --import tsx src/server.ts",
+    "host:start": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --import tsx scripts/host-sandbox.ts start",
+    "host:status": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --env-file-if-exists=.env.solari --import tsx scripts/host-sandbox.ts status",
+    "host:refresh": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --env-file-if-exists=.env.solari --import tsx scripts/host-sandbox.ts refresh",
+    "host:logs": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --env-file-if-exists=.env.solari --import tsx scripts/host-sandbox.ts logs",
+    "host:cleanup": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --import tsx scripts/host-sandbox.ts cleanup",
+    "host:stop": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --env-file-if-exists=.env.solari --import tsx scripts/host-sandbox.ts stop",
+    "smoke:codex": "node --env-file-if-exists=.env --env-file-if-exists=../../.env --import tsx scripts/codex-smoke.ts",
+    "capture": "tsx scripts/capture-demo.ts",
+    "record:demo": "tsx scripts/record-demo.ts",
+    "video:timeline": "tsx scripts/build-timeline.ts",
+    "video:render": "npm --prefix video run render",
+    "video:studio": "npm --prefix video run studio",
+    "smoke:solari": "node --env-file=../../.env --import tsx scripts/solari-smoke.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@playwright/mcp": "^0.0.80",
+    "@solarisdk/browser": "^0.1.1",
+    "@solarisdk/sdk": "^0.1.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "playwright": "^1.55.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}
