@@ -1,97 +1,120 @@
-# Solari Cookbook
+# DuePoint — an AI agent that collects overdue invoices from your customers' AP portals
 
-Short, runnable examples for [Solari](https://getsolari.com) — cloud browsers,
-sandboxes, and desktops behind one API key.
+Large buyers make suppliers invoice and check status through the **buyer's** portal — Ariba,
+Coupa, Tungsten, or something built in-house in 2009. The supplier gets no API, because it
+isn't their system. Collectors log into each portal, hunt for the invoice, read a status
+worded differently everywhere, and re-key it into their own AR system.
 
-Every example in this repo is a complete program you can run in under a minute.
-They are deliberately small: one idea each, no framework, no scaffolding to read
-past. Copy one into your project and change the parts you care about.
+DuePoint does that job: one AI agent per customer, each on its own **Solari cloud browser**,
+working four completely different portal UIs in parallel — no portal-specific code — with a
+human approving anything that could concede money.
 
-## Examples
+**[▶ Watch the demo video](video/out/duepoint-demo.mp4)** — rendered from a real run (see [The demo video](#the-demo-video)).
 
-### Cloud browser
+## Quickstart
 
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [browser-quickstart-ts](examples/browser-quickstart-ts) | TypeScript | Launch a browser, open a page, read it |
-| [browser-quickstart-py](examples/browser-quickstart-py) | Python | Launch a browser, open a page, read it |
-| [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
-| [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
-| [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
-
-### Sandbox
-
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
-| [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
-| [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
-
-### Desktop
-
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
-
-### End-to-end applications
-
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [ar-portal-collections](examples/ar-portal-collections) | TypeScript | Collect overdue invoices across four different customer AP portals in parallel, with approvals and a legacy AR system |
-
-## Running an example
-
-Each directory is self-contained.
+You need two things: a **Codex login** (the agent — uses your ChatGPT plan, no model API key)
+and a **Solari API key** (the infrastructure).
 
 ```bash
-git clone https://github.com/solari-sdk/solari-cookbook.git
-cd solari-cookbook/examples/browser-quickstart-ts
+git clone https://github.com/gcalcedo/duepoint && cd duepoint
+npm install
+npx playwright install chromium
 
-npm install                          # or: pip install -r requirements.txt
-export SOLARI_API_KEY=slr_live_...   # grab one at console.getsolari.com
-npm start                            # or: python main.py
+codex login                          # 1. the agent  (or: export CODEX_API_KEY=...)
+export SOLARI_API_KEY=slr_live_...   # 2. the infra  (getsolari.com)
+
+npm run demo:solari                  # dashboard at http://127.0.0.1:4310 — click “Check portals”
 ```
 
-One `slr_live_` key works across browsers, sandboxes, and desktops, and every
-product bills to the same balance.
+That one command hosts the portals + AR system in a Solari sandbox automatically (reusing a
+live one if present), keeps the preview token fresh, and **kills the sandbox when you Ctrl-C**
+— nothing left running or billing. `KEEP_SANDBOX=1 npm run demo:solari` keeps it warm between
+restarts.
 
-## Which product do I want?
+Four agents fan out across the portals on Solari cloud browsers; ~3 minutes later the queue is
+worked, six invoices wait for your approval, and every invoice links to its Solari session
+replays.
 
-- **Cloud browser** — you need a *web page*: scraping, testing, filling forms,
-  anything Playwright or Puppeteer would do locally. Adds stealth, managed
-  proxies, captcha solving, profiles, and session recording.
-- **Sandbox** — you need to *run code*: an LLM's Python, an untrusted build, a
-  data job. A headless microVM that boots from a snapshot in about a second.
-- **Desktop** — you need a *screen*: computer-use agents, GUI apps, anything
-  that has to be clicked. A sandbox plus X11 and a live VNC stream.
+**No Solari key yet?** `npm run demo:agent` runs the identical thing on local browsers.
+**No Codex either?** `npm run demo` uses deterministic scripted flows — zero accounts needed.
 
-## Gotchas the examples encode
+## What you're looking at
 
-Things that cost you an afternoon if you meet them cold:
+```text
+Overdue_Invoices.xlsx  (24 invoices · 5 customers · $433K past due)
+        │
+        ├── SupplierNet   (Meridian Manufacturing)   enterprise supplier network: filters → table → drill-down
+        ├── ProcureHub    (Atlas Retail Group)       SaaS P2P suite: global search → drawer → confirm dialogs
+        ├── TradeLink     (Halvorsen Logistics)      e-invoicing network: buyer-gated lookup → status timeline
+        ├── Vendor Center (Crestview Health)         homegrown legacy portal: scan a table → plain forms
+        └── (no portal)   (Brightwater Foods)        held for a manual statement
+        │          all four portals worked in parallel — one agent, one cloud browser, per customer
+        ▼
+   Paid → match remittance · Approved → record promise · Pending → request status
+   Not received → resubmit · Rejected → correct & resubmit · Disputed → human approval
+        ▼
+   Corvus AR (legacy receivables workstation) updated with status, reference and note
+```
 
-- **TypeScript: call `await solari.close()`.** The browser client keeps a
-  loopback proxy open for connection retries. Skip the close and your script
-  prints its output and then hangs forever instead of exiting.
-- **Recording is per session, not per account.** Pass `recording: true` when you
-  create the session; without it the replay endpoint 404s forever. The upload is
-  async after release, so poll for ~30s before giving up.
-- **Sandbox commands are not shell-interpreted.** `run("ls -la")` looks for a
-  binary named `ls -la`. Put argv in `args`, or run `sh -c` explicitly.
-- **`kill()`, not `close()`, ends a VM.** `close()` drops your local control
-  channel; the VM keeps running until its idle timeout.
-- **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
-  every use.
+In our runs the agent read **22/22** portal findings correctly and completed all 10 portal
+actions — $93K confirmed, $204K unblocked in 324 seconds.
 
-## Links
+## How Solari is used
 
-- Docs — [docs.getsolari.com](https://docs.getsolari.com)
-- Console — [console.getsolari.com](https://console.getsolari.com)
-- Changelog — [changelog.getsolari.com](https://changelog.getsolari.com)
-- Questions — [hello@getsolari.com](mailto:hello@getsolari.com)
+| Solari | Role |
+| --- | --- |
+| **Sandbox** | Hosts the “outside world” — the four portals and Corvus AR — on a public preview URL (`npm run host:start`) |
+| **Browser × 4 (hosted MCP)** | Each Codex agent creates its own recorded cloud browser and works its portal through `solari_browser_*` tools |
+| **Browser (SDK)** | The fixed Corvus AR posting flow runs in a recorded Solari browser |
+| **Replays** | Every session is recorded; each invoice links to its portal-check, portal-action and AR replays (`/api/replay/:sessionId`) |
 
-## Contributing
+## How the agent works
 
-New examples are welcome. Keep them small, make them run end-to-end against the
-real API, and put anything surprising in a comment right where it bites.
+**Policy in code, perception and execution by the agent.**
 
-MIT licensed.
+- `src/domain.ts` — what to do per portal finding, and what stops for a human: disputes,
+  no-portal accounts, anything ≥ $50K, anything the agent couldn't determine.
+- `src/codex-agent.ts` — runs `codex exec` per customer with a goal (*“check these invoices in
+  this portal, tell me what it shows”*) and MCP browser tools. No portal-specific code: it
+  explores navigation, reads the portal's own wording, maps it to a finding. A second turn on
+  the same thread executes the actions.
+- `src/portal-adapters.ts` — a deterministic Playwright flow per portal, kept as the **test
+  fixture** and as ground truth to score the agent (that's where 22/22 comes from). The mocks
+  expose test ids only for the fixture; the agent sees pages like a person would.
+
+## All commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run demo` | Scripted flows, visible local browsers — no accounts needed |
+| `npm run demo:agent` | Codex agents on local browsers (Playwright MCP) |
+| `npm run demo:solari` | Codex agents on Solari cloud browsers, AR posting on Solari |
+| `npm run host:status` / `host:refresh` / `host:logs` / `host:stop` / `host:cleanup` | Manual sandbox controls — `demo:solari` manages the sandbox automatically |
+| `npm run smoke:codex` | 20s end-to-end check: Codex → MCP → browser → structured output (`BROWSER_MCP=solari` for the cloud path) |
+| `npm test` / `npm run typecheck` | Policy + agent-prompt unit tests, full scripted E2E across every portal |
+
+## The demo video
+
+Cut from real run data, not hand-animated — marks become cuts, the run's length computes the
+speed ramp, the outro counters animate the actual summary:
+
+```bash
+npm run record:demo      # record dashboard + portal B-roll against a live run
+npm run video:timeline   # recording → edit decisions
+npm run video:render     # Remotion → video/out/duepoint-demo.mp4 (4K)
+```
+
+Music: “Phase Shift” by Scott Buckley (scottbuckley.com.au), CC BY 4.0 — drop it at
+`video/assets/music.mp3` (see `video/assets/MUSIC.md`) and credit it wherever you publish.
+
+## Honest notes
+
+- Customers, portals, invoices and amounts are fictional; the portals are modelled on
+  *categories* of AP portal, not any vendor's UI. The portal back-ends only know what a real
+  buyer's system would know — the agent discovers state by operating the UI.
+- The agent is non-deterministic; anything it can't determine comes back `unknown` and is held
+  for review, never acted on. The AR posting is a fixed flow — the agent never free-forms into
+  the system of record.
+- A full agent run is ~40–60 Codex turns (your ChatGPT plan) + five Solari browser sessions +
+  one sandbox.

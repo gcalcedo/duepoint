@@ -1,8 +1,10 @@
 node_modules/
-package-lock.json
+dist/
 .env
-__pycache__/
-*.pyc
-.venv/
-venv/
-screenshot.png
+demo-artifacts/
+.env.solari
+recordings/
+video/out/*
+video/assets/music.mp3
+data/
+!video/out/duepoint-demo.mp4
