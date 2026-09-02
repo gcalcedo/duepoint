@@ -27,8 +27,6 @@ export interface AgentEvent {
 
 export interface AgentConfig {
   baseUrl: string
-  /** Preview-URL token when the portals are hosted on a Solari sandbox. */
-  accessToken?: string
   mcp: BrowserMcp
   visible: boolean
   model?: string
@@ -225,14 +223,14 @@ export class CodexPortalAgent {
   }
 
   async lookup(customer: CustomerSlug, invoices: Invoice[]): Promise<{ results: AgentLookup[]; sessionId?: string }> {
-    const url = publicUrl(this.config, `/portal/${customer}`)
+    const url = publicUrl({ baseUrl: this.config.baseUrl }, `/portal/${customer}`)
     const { output, threadId } = await this.run(customer, buildLookupPrompt(customer, invoices, url, this.config.mcp), lookupSchema)
     if (threadId) this.threads.set(customer, threadId)
     return { results: Array.isArray(output?.results) ? output.results : [], sessionId: sessionIdOf(output) }
   }
 
   async act(customer: CustomerSlug, actions: AgentAction[]): Promise<{ results: AgentActionResult[]; sessionId?: string }> {
-    const url = publicUrl(this.config, `/portal/${customer}`)
+    const url = publicUrl({ baseUrl: this.config.baseUrl }, `/portal/${customer}`)
     const { output, threadId } = await this.run(customer, buildActionPrompt(customer, actions, url, this.config.mcp), actionSchema, this.threads.get(customer))
     if (threadId) this.threads.set(customer, threadId)
     return { results: Array.isArray(output?.results) ? output.results : [], sessionId: sessionIdOf(output) }

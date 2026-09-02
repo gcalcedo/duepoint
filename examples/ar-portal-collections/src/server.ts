@@ -3,17 +3,37 @@ import { fileURLToPath } from "node:url"
 import express from "express"
 import { Solari } from "@solarisdk/browser"
 import { customers, customerSlugs, summarize, type CustomerSlug } from "./domain.js"
+import { previewAuth } from "./public-url.js"
+import { ensureHosted, refreshPreview, stopHosted } from "./sandbox-host.js"
 import { CollectionsOrchestrator } from "./orchestrator.js"
 import { loadInvoices, Store } from "./store.js"
 
 const directory = path.dirname(fileURLToPath(import.meta.url))
 const port = Number(process.env.PORT ?? 4310)
 const host = process.env.HOST ?? "127.0.0.1"
-const baseUrl = process.env.PUBLIC_BASE_URL ?? `http://127.0.0.1:${port}`
 const publicDirectory = path.resolve(directory, "../public")
 const app = express()
 const agentMode = process.env.AGENT_MODE === "codex" ? "codex" : "scripted"
 const browserMcp = (process.env.BROWSER_MCP ?? (process.env.EXECUTION_PROVIDER === "solari" ? "solari" : "playwright")) as "playwright" | "solari"
+
+// Any Solari browser (agent MCP or AR posting) must reach the portals over the public internet,
+// so host them in a Solari sandbox automatically: reuse a live one or provision fresh.
+const needsPublicPortals = (agentMode === "codex" && browserMcp === "solari") || process.env.EXECUTION_PROVIDER === "solari"
+let baseUrl = process.env.PUBLIC_BASE_URL ?? `http://127.0.0.1:${port}`
+let hostedSandboxId: string | undefined
+previewAuth.token = process.env.PUBLIC_ACCESS_TOKEN
+if (needsPublicPortals && process.env.HOSTED_INSIDE_SANDBOX !== "1") {
+  const hosted = await ensureHosted()
+  baseUrl = hosted.origin
+  previewAuth.token = hosted.token
+  hostedSandboxId = hosted.sandboxId
+  // Preview tokens last ~1h — keep a fresh one while the server runs.
+  setInterval(() => {
+    void refreshPreview(hosted.sandboxId)
+      .then(({ token }) => { previewAuth.token = token })
+      .catch((error) => console.error(`preview token refresh failed: ${error instanceof Error ? error.message : error}`))
+  }, 40 * 60_000).unref()
+}
 const store = new Store(await loadInvoices())
 const orchestrator = new CollectionsOrchestrator(store, baseUrl, {
   agentMode,
@@ -21,7 +41,6 @@ const orchestrator = new CollectionsOrchestrator(store, baseUrl, {
   visible: process.env.DEMO_MODE === "visible",
   model: process.env.CODEX_MODEL,
   reasoningEffort: process.env.CODEX_REASONING_EFFORT,
-  accessToken: process.env.PUBLIC_ACCESS_TOKEN,
 })
 
 const portalPages: Record<string, string> = {
@@ -102,9 +121,9 @@ app.post("/api/reset", (_request, response) => {
 app.post("/api/run", async (_request, response) => {
   if (orchestrator.isActive()) return response.status(409).json({ error: "Worker is already active" })
   // When the portals live on a Solari preview URL, verify it still answers before spending agent turns on it.
-  if (process.env.PUBLIC_ACCESS_TOKEN) {
-    const reachable = await fetch(`${baseUrl}/api/state?pt_token=${process.env.PUBLIC_ACCESS_TOKEN}`).then((probe) => probe.ok).catch(() => false)
-    if (!reachable) return response.status(409).json({ error: "The portal preview URL is not answering — the access token has likely expired. Run `npm run host:refresh` and restart the server." })
+  if (previewAuth.token) {
+    const reachable = await fetch(`${baseUrl}/api/state?pt_token=${previewAuth.token}`).then((probe) => probe.ok).catch(() => false)
+    if (!reachable) return response.status(409).json({ error: "The portal preview URL is not answering — run `npm run host:refresh` and restart the server." })
   }
   response.status(202).json({ ok: true })
   void orchestrator.runQueue().catch((error) => console.error(error))
@@ -173,8 +192,23 @@ app.post("/api/ar/post", (request, response) => {
 })
 
 app.listen(port, host, () => {
-  console.log(`\nDuePoint: ${baseUrl}${host !== "127.0.0.1" ? ` (bound to ${host}:${port})` : ""}`)
-  console.log(`Execution provider: ${process.env.EXECUTION_PROVIDER ?? "local"}`)
+  console.log(`\nDuePoint dashboard: http://127.0.0.1:${port}`)
+  if (hostedSandboxId) console.log(`Portals hosted on Solari: ${baseUrl} (sandbox is killed automatically on exit; KEEP_SANDBOX=1 to keep it)`)
   console.log(`Portal worker: ${orchestrator.describeWorker()}`)
   console.log("Open the dashboard and click “Check portals”.\n")
 })
+
+// Kill the sandbox when the server goes away — no forgotten billable machines.
+let shuttingDown = false
+const shutdown = (signal: string) => {
+  if (shuttingDown) return
+  shuttingDown = true
+  const finish = () => process.exit(0)
+  if (hostedSandboxId && process.env.KEEP_SANDBOX !== "1") {
+    console.log(`\n${signal} — killing the Solari sandbox (set KEEP_SANDBOX=1 to keep it warm)…`)
+    void stopHosted(hostedSandboxId).then(finish, (error) => { console.error(error); finish() })
+  } else {
+    finish()
+  }
+}
+for (const signal of ["SIGINT", "SIGTERM"] as const) process.on(signal, () => shutdown(signal))

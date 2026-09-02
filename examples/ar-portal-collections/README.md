@@ -24,13 +24,17 @@ npx playwright install chromium
 codex login                          # 1. the agent  (or: export CODEX_API_KEY=...)
 export SOLARI_API_KEY=slr_live_...   # 2. the infra  (getsolari.com)
 
-npm run host:start                   # portals + AR system → a Solari sandbox, public preview URL
 npm run demo:solari                  # dashboard at http://127.0.0.1:4310 — click “Check portals”
 ```
 
+That one command hosts the portals + AR system in a Solari sandbox automatically (reusing a
+live one if present), keeps the preview token fresh, and **kills the sandbox when you Ctrl-C**
+— nothing left running or billing. `KEEP_SANDBOX=1 npm run demo:solari` keeps it warm between
+restarts.
+
 Four agents fan out across the portals on Solari cloud browsers; ~3 minutes later the queue is
 worked, six invoices wait for your approval, and every invoice links to its Solari session
-replays. Run `npm run host:stop` when you're done (the sandbox bills while it runs).
+replays.
 
 **No Solari key yet?** `npm run demo:agent` runs the identical thing on local browsers.
 **No Codex either?** `npm run demo` uses deterministic scripted flows — zero accounts needed.
@@ -86,7 +90,7 @@ actions — $93K confirmed, $204K unblocked in 324 seconds.
 | `npm run demo` | Scripted flows, visible local browsers — no accounts needed |
 | `npm run demo:agent` | Codex agents on local browsers (Playwright MCP) |
 | `npm run demo:solari` | Codex agents on Solari cloud browsers, AR posting on Solari |
-| `npm run host:start` / `host:status` / `host:refresh` / `host:logs` / `host:stop` | Sandbox hosting the portals (preview tokens last ~1h — `host:refresh` before demos) |
+| `npm run host:status` / `host:refresh` / `host:logs` / `host:stop` / `host:cleanup` | Manual sandbox controls — `demo:solari` manages the sandbox automatically |
 | `npm run smoke:codex` | 20s end-to-end check: Codex → MCP → browser → structured output (`BROWSER_MCP=solari` for the cloud path) |
 | `npm test` / `npm run typecheck` | Policy + agent-prompt unit tests, full scripted E2E across every portal |
 

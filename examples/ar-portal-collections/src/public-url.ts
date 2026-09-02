@@ -9,9 +9,13 @@ export interface PublicTarget {
   accessToken?: string
 }
 
+/** Live preview token — refreshed by the server while it runs (tokens last ~1h). */
+export const previewAuth: { token?: string } = {}
+
 export function publicUrl(target: PublicTarget, path: string): string {
   const url = new URL(path, target.baseUrl.endsWith("/") ? target.baseUrl : `${target.baseUrl}/`)
-  if (target.accessToken) url.searchParams.set("pt_token", target.accessToken)
+  const token = target.accessToken ?? previewAuth.token
+  if (token) url.searchParams.set("pt_token", token)
   return url.toString()
 }
 

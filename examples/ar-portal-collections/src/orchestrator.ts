@@ -15,8 +15,6 @@ export interface OrchestratorOptions {
   visible: boolean
   model?: string
   reasoningEffort?: string
-  /** Preview-URL token when the portals are hosted on a Solari sandbox. */
-  accessToken?: string
 }
 
 const NO_PORTAL_ACTIONS: Action[] = ["match-remittance", "record-promise", "send-statement"]
@@ -30,7 +28,6 @@ export class CollectionsOrchestrator {
     if (options.agentMode === "codex") {
       this.agent = new CodexPortalAgent({
         baseUrl,
-        accessToken: options.accessToken,
         mcp: options.browserMcp,
         visible: options.visible,
         model: options.model,
@@ -97,7 +94,7 @@ export class CollectionsOrchestrator {
     }
 
     const page = await session.newPage()
-    bindBaseUrl(page, this.baseUrl, this.options.accessToken)
+    bindBaseUrl(page, this.baseUrl)
     try {
       this.store.addEvent("lookup", `Opening ${customer.portal} for ${customer.name} — ${invoices.length} invoices, ${formatMoney(invoices.reduce((sum, invoice) => sum + invoice.amount, 0))}`, undefined, slug)
       if (this.agent) await this.workWithAgent(page, slug, invoices)
@@ -211,7 +208,7 @@ export class CollectionsOrchestrator {
     const session = await createBrowserSession()
     this.arSessionId = session.sessionId
     const page = await session.newPage()
-    bindBaseUrl(page, this.baseUrl, this.options.accessToken)
+    bindBaseUrl(page, this.baseUrl)
     try {
       const action = invoice.recommendedAction
       this.store.addEvent("approval", `Collector approved: ${actionLabels[action]}`, id, invoice.customer)
